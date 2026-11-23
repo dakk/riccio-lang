@@ -1,7 +1,7 @@
 opam-version: "2.0"
 name: "riccio-lang"
 version: "0.1.0"
-synopsis: "RICCIO Language"
+synopsis: "Riccio Language"
 description: """
 A recursive immutable curried compiled IO-aware language
 """
