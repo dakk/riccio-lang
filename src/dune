@@ -1,0 +1,11 @@
+(executable
+ (public_name riccio)
+ (name riccio)
+ (preprocess (pps ppx_jane ppx_deriving.show))
+ (libraries riccio menhirLib core core_unix core_unix.command_unix ppx_deriving)
+ (modules riccio))
+
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))

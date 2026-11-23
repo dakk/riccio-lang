@@ -1,0 +1,12 @@
+(library
+ (public_name riccio)
+ (name riccio)
+ ; (libraries 
+ ;  helpers
+ ; )
+ (modules compiler))
+
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))

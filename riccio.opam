@@ -1,0 +1,32 @@
+opam-version: "2.0"
+name: "riccio-lang"
+version: "0.1.0"
+synopsis: "RICCIO Language"
+description: """
+A recursive immutable curried compiled IO-aware language
+"""
+maintainer: "Davide Gessa <gessadavide@gmail.com>"
+authors: [
+  "Davide Gessa <gessadavide@gmail.com>"
+]
+
+homepage: "https://github.com/dakk/riccio-lang"
+bug-reports: "https://github.com/dakk/riccio-lang/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/dakk/riccio-lang.git"
+build: ["dune" "build" "-p" name "-j" jobs]
+
+depends: [
+  "ocaml" {>= "4.05.0"}
+  
+  "dune" {>= "3.20.0"}
+  "core" {>= "0.17.2"}
+  "core_unix" {>= "0.17.1"}
+  "menhir" {>= "20260209"}
+  "ppx_deriving" {>= "6.2.0"}
+
+  "ounit" {with-test & >= "2.2.7"}
+]
+
+depexts: [
+]
