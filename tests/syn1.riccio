@@ -1,0 +1,16 @@
+# First syntax iteration for the parser and the lexer
+# Only comments, unit type, functions, typedef allowed
+
+type a = unit
+
+def afun(t: a) -> a:
+    t
+
+def bfun(t) -> unit:
+    t
+
+def cfun(t):
+    t
+
+def cfun(t: unit) -> unit:
+    t

@@ -53,17 +53,36 @@ Types are defined using the type keyword.
 ### Base types
 
 #### unit
-Type unit has only one value `()`
+Type unit has only one value `()`. No operation is defined on it.
 
 #### bool
 
+Values: `True, False`
+Operations: `True and False or not False`
+
+
 #### int
+
+Values: `12, -148`
+Operations: `+, -, *, /, %`
 
 #### float
 
+Values: `12.3, -148.44`
+Operations: `+, -, *, /, %`
+
+
 #### str
 
+Values: `"hello riccio"`
+Join two strings: `"ciao" + "riccio"`
+
+
 #### bytes
+
+Values: `b"hello riccio"`
+Join two bytes: `b"ciao" + b"riccio"`
+
 
 ### Tuple
 
@@ -72,13 +91,16 @@ type t = int * float
 c = (12, 13.0)
 ```
 
+Operations: `c[0], c[1]`
+
+
 ### List 
 
-```
-a: list(int) = [1, 2, 3]
-b = 3 :: a 
-c = a ++ [3, 4]
-```
+`a: list(int) = [1, 2, 3]`
+
+Add value: `b = 3 :: a`
+Concat two lists: `c = a ++ [3, 4]`
+
 
 ### Record 
 
@@ -90,7 +112,7 @@ def birthday(person: pp):
 ```
 
 
-### Data constructors and generic types
+### Data constructors, generic types and unions
 
 Data constructors are supported, as long with generic types (prefixed by ')
 
@@ -149,7 +171,7 @@ function with side effects.
 ```
 def print(s: str): IO unit
 
-def greet(name):      # note: `name` is pure
+def greet(name):      # name is pure
     "hello " + name
 
 def ask(): IO str  # inferred automatically

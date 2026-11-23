@@ -10,4 +10,5 @@ let default_options = {
 
 
 let compile (filename: string) opt =
-  ()
+  let p_ast = Parse.parse_file filename in
+  p_ast |> Ast.show |> print_endline
