@@ -4,7 +4,7 @@
 ![CI Status](https://github.com/dakk/riccio-lang/actions/workflows/ci.yaml/badge.svg)
 ![License: GPL 3.0](https://img.shields.io/badge/license-GPL_3.0-blue)
 
-A recursive immutable curried IO-aware language.
+A recursive immutable curried compiled IO-aware language.
 
 Specs at [/spec](/spec).
 
@@ -29,7 +29,7 @@ This software is licensed with [General Public License 3.0](LICENSE).
 ```
 @software{ricciolang2026,
   author = {Davide Gessa},
-  title = {riccio: a recursive immutable curried inferenced language},
+  title = {riccio: A recursive immutable curried compiled IO-aware language},
   url = {https://github.com/dakk/riccio-lang},
   year = {2026},
 }
