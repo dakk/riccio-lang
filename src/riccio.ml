@@ -34,8 +34,10 @@ let command =
         and filename  = anon ("filename" %: string)
         and past      = flag "-print-ast" no_arg ~doc:" print ast"
         and verbose   = flag "-verbose" no_arg ~doc:" enable verbosity"
+        and target    = flag "-target" (optional string) ~doc:" target output (ml)"
       in fun () -> 
         let opt = Compiler.{
+          target = Option.value target ~default:"ml";
           print_ast = past;
           verbose = verbose;
         } in (
@@ -46,6 +48,7 @@ let command =
           | ParsingError (p,m) -> print_endline @@ pp_err p "ParsingError" m
           | TypeError (p,m) -> print_endline @@ pp_err p "TypeError" m
           | SymbolNotFound (p,m) -> print_endline @@ pp_err p "SymbolNotFound" m
+          | LexerError(e) -> print_endline @@ "LexerError" ^ e
         )
       )
         

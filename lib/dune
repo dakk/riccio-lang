@@ -15,7 +15,7 @@
  (name riccio)
  (preprocess (pps ppx_jane ppx_deriving.show))
  (libraries menhirLib)
- (modules compiler parser_messages parse errors ast pt_loc parser lexer))
+ (modules compiler gen_ml parser_messages parse errors ast pt_loc parser lexer))
 
 
 (env
