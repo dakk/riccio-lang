@@ -6,8 +6,22 @@
 
 A recursive immutable curried compiled IO-aware language.
 
+```python
+def clean(lines):
+    lines
+    |> map(parse)
+    |> filter(ok)
+    |> sum
+
+total = clean(read("input.txt"))
+print(total)
+```
+
 Specs at [/spec](/spec).
 
+## Targets
+
+Riccio currently only emits Ocaml output, but I plan to use the QBE backend.
 
 ## About the author
 

@@ -1,0 +1,2 @@
+def bo (a: bool, b, c) -> bool:
+    a and b or not c
