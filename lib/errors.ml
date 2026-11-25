@@ -1,3 +1,4 @@
+exception LexerError of string
 exception SyntaxError of Pt_loc.l option * string
 exception ParsingError of Pt_loc.l option * string
 exception TypeError of Pt_loc.l option * string

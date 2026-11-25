@@ -1,8 +1,7 @@
 {
   open Parser
   open Lexing
-
-  exception SyntaxError2 of string
+  open Errors
 
   let indent_stack = ref [0]       
   let paren_depth  = ref 0
@@ -12,7 +11,7 @@
 
   let push t = pending := !pending @ [t]
 
-  let err msg = raise (SyntaxError2 msg)
+  let err msg = raise (LexerError msg)
 
   let adjust width =
     let dedented = ref false in
@@ -28,7 +27,7 @@
       | top :: _ when width > top ->
           indent_stack := width :: !indent_stack;
           push INDENT
-      | _ -> ()                     (* width = top: same level, nothing to do *)
+      | _ -> ()
     in
     down ()
 }
@@ -109,7 +108,7 @@ rule token = parse
   | "\"\"\"" { comment_multiline lexbuf; token lexbuf }
 
   | '"'         { read_string (Buffer.create 32) lexbuf }
-  | "b\"" as s  (* bytes prefix + string; handled by read_string via app? no: see note below *)
+  | "b\"" as s
       { let _ = s in err "unreachable: see bytes below" }
 
   | iden as i  { IDEN i }
