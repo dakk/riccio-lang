@@ -21,6 +21,14 @@
 %token LTE, LT, GT, GTE, EQEQ, NEQ
 %token UNDERSCORE, FROM, IMPORT, DEF, REC
 
+
+// %left OR
+// %left AND
+// %nonassoc NOT
+// %nonassoc EQEQ NEQ LT LTE GT GTE
+// %left PLUS MINUS
+// %left MUL DIV MOD
+
 %start <Ast.t> program
 %%
 
@@ -32,16 +40,18 @@ expr:
 
 | x=STRING      		{ loce $startpos $endpos @@ Ast.EStr (x) }
 | x=BYTES       		{ loce $startpos $endpos @@ Ast.EBytes (x) }
-// | x=FLOAT         { loce $startpos $endpos @@ Ast.EFloat (x) }
+| x=FLOAT         		{ loce $startpos $endpos @@ Ast.EFloat (x) }
 
 | x=INT         		{ loce $startpos $endpos @@ Ast.EInt (x) }
 | a=expr PLUS b=expr	{ loce $startpos $endpos @@ Ast.EAdd (a, b) }
 | a=expr MINUS b=expr	{ loce $startpos $endpos @@ Ast.ESub (a, b) }
+| MINUS e=expr          { loce $startpos $endpos @@ Ast.ENeg e }
 | a=expr MUL b=expr		{ loce $startpos $endpos @@ Ast.EMul (a, b) }
 | a=expr DIV b=expr		{ loce $startpos $endpos @@ Ast.EDiv (a, b) }
 | a=expr MOD b=expr		{ loce $startpos $endpos @@ Ast.EMod (a, b) }
 
 | a=expr EQEQ b=expr	{ loce $startpos $endpos @@ Ast.EEq (a, b) }
+| a=expr NEQ b=expr		{ loce $startpos $endpos @@ Ast.ENeq (a, b) }
 | a=expr GT b=expr		{ loce $startpos $endpos @@ Ast.EGt (a, b) }
 | a=expr GTE b=expr		{ loce $startpos $endpos @@ Ast.EGte (a, b) }
 | a=expr LT b=expr		{ loce $startpos $endpos @@ Ast.ELt (a, b) }
@@ -80,18 +90,25 @@ block:
 | NEWLINE INDENT e=expr DEDENT   { e }
 | e=expr                         { e }
 
+typexpr_atom:
+| t=IDEN               { Ast.TBase (t) }
+| APEX t=IDEN          { Ast.TAnon (t) }
+| LPAR t=typeexpr RPAR { t }
+
 typeexpr:
-| t=IDEN       { Ast.TBase (t) }
-| APEX t=IDEN  { Ast.TAnon (t) }
+| xs=separated_nonempty_list(MUL, typexpr_atom)
+    { match xs with [t] -> t | _ -> Ast.TTuple xs }
 
 
 defs:
 | TYPE i=IDEN EQ t=typeexpr      { locd $startpos $endpos @@ Ast.DType(i, t) }
-| DEF i=IDEN EQ e=expr           { locd $startpos $endpos @@ Ast.DDef(i, e) }
+| i=IDEN EQ e=expr	 		     { locd $startpos $endpos @@ Ast.DDef(i, None, e) }
+| i=IDEN COLON t=typeexpr  EQ e=expr	 		     
+								 { locd $startpos $endpos @@ Ast.DDef(i, Some (t), e) }
 | DEF i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON body=block
-                                 { locd $startpos $endpos @@ Ast.DDef(i, loce $startpos $endpos @@ Ast.EFun(false, p, r, body)) }
+                                 { locd $startpos $endpos @@ Ast.DDef(i, None, Ast.EFun(false, p, r, body)) }
 | DEF REC i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON body=block
-                                 { locd $startpos $endpos @@ Ast.DDef(i, loce $startpos $endpos @@ Ast.EFun(true, p, r, body)) }
+                                 { locd $startpos $endpos @@ Ast.DDef(i, None, Ast.EFun(true, p, r, body)) }
 | IMPORT i=IDEN                  { locd $startpos $endpos @@ Ast.DImport(i) }
 | FROM m=IDEN IMPORT xs=separated_nonempty_list(COMMA, IDEN)
                                  { locd $startpos $endpos @@ Ast.DImportFrom(xs, m) }

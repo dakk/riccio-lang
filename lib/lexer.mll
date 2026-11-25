@@ -106,9 +106,8 @@ rule token = parse
   | '#'     { comment lexbuf; token lexbuf }
   | "\"\"\"" { comment_multiline lexbuf; token lexbuf }
 
-  | '"'         { read_string (Buffer.create 32) lexbuf }
-  | "b\"" as s
-      { let _ = s in err "unreachable: see bytes below" }
+  | '"'         { read_string (fun s -> STRING s) (Buffer.create 32) lexbuf }
+  | "b\""       { read_string (fun s -> BYTES (Bytes.of_string s)) (Buffer.create 32) lexbuf }
 
   | iden as i  { IDEN i }
 
@@ -126,12 +125,12 @@ rule token = parse
   | _ as c { err (Format.sprintf "invalid character %C" c) }
 
 
-and read_string buf = parse
-  | '"'                     { STRING (Buffer.contents buf) }
-  | '\\' 'n'                { Buffer.add_char buf '\n'; read_string buf lexbuf }
-  | '\\' 't'                { Buffer.add_char buf '\t'; read_string buf lexbuf }
-  | '\\' '\\'               { Buffer.add_char buf '\\'; read_string buf lexbuf }
-  | '\\' '"'                 { Buffer.add_char buf '"';  read_string buf lexbuf }
+and read_string mk buf = parse
+  | '"'                     { mk (Buffer.contents buf) }
+  | '\\' 'n'                { Buffer.add_char buf '\n'; read_string mk buf lexbuf }
+  | '\\' 't'                { Buffer.add_char buf '\t'; read_string mk buf lexbuf }
+  | '\\' '\\'               { Buffer.add_char buf '\\'; read_string mk buf lexbuf }
+  | '\\' '"'                 { Buffer.add_char buf '"';  read_string mk buf lexbuf }
   | '\\' 'u' ['0'-'9' 'a'-'f' 'A'-'F'] ['0'-'9' 'a'-'f' 'A'-'F'] ['0'-'9' 'a'-'f' 'A'-'F'] ['0'-'9' 'a'-'f' 'A'-'F']
                             { err "unicode escapes are not supported yet" }
   | '\\' ([^ '"' '\\' '\n' 'n' 't' 'u'] as c)
@@ -139,7 +138,7 @@ and read_string buf = parse
   | '\n'                    { err "unterminated string literal" }
   | eof                     { err "unterminated string literal" }
   | [^ '"' '\\' '\n']+      { Buffer.add_string buf (Lexing.lexeme lexbuf);
-                              read_string buf lexbuf }
+                              read_string mk buf lexbuf }
 
 and comment = parse
   | '\n' { () }                       

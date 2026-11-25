@@ -9,6 +9,7 @@ type texpr =
 type expr =
 | EUnit
 | EInt of int
+| EFloat of float
 | EStr of string
 | EBool of bool
 | EBytes of bytes
@@ -16,6 +17,7 @@ type expr =
 | EApp of expr * expr
 
 | ENot of expr
+| ENeg of expr
 | EAnd of expr * expr
 | EOr of expr * expr
 | EJoin of expr * expr
@@ -26,6 +28,7 @@ type expr =
 | EDiv of expr * expr
 | EMod of expr * expr
 
+| ENeq of expr * expr
 | EEq of expr * expr
 | ELt of expr * expr
 | ELte of expr * expr
@@ -42,7 +45,7 @@ type def =
 | DType of string * texpr
 | DImport of string 
 | DImportFrom of string list * string
-| DDef of string * expr
+| DDef of string * texpr option * expr
 [@@deriving show {with_path = false}]
 
 

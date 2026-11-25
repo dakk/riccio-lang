@@ -10,6 +10,8 @@ def bfun(t) -> unit:
     t
 
 def cfun(t):
+    def inner(v):
+        v
     t
 
 def cfun(t: unit) -> unit:

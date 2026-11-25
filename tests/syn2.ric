@@ -1,2 +1,3 @@
 def bo (a: bool, b, c) -> bool:
-    a and b or not c
+    v = a and b or not c and False
+    v if v == True else False
