@@ -4,6 +4,7 @@ type texpr =
 | TTuple of texpr list
 | TRecord of (string * texpr) list
 | TList of texpr
+| TLambda of texpr * texpr
 [@@deriving show {with_path = false}]
 
 type expr =
@@ -14,7 +15,9 @@ type expr =
 | EBool of bool
 | EBytes of bytes
 | EVal of string
-| EApp of expr * expr
+| EApp of expr * expr list
+| ETuple of expr list
+| ETupleAccess of expr * expr
 
 | ENot of expr
 | ENeg of expr

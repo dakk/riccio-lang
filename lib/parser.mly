@@ -41,8 +41,14 @@ expr:
 | x=STRING      		{ loce $startpos $endpos @@ Ast.EStr (x) }
 | x=BYTES       		{ loce $startpos $endpos @@ Ast.EBytes (x) }
 | x=FLOAT         		{ loce $startpos $endpos @@ Ast.EFloat (x) }
-
 | x=INT         		{ loce $startpos $endpos @@ Ast.EInt (x) }
+| e=expr LPAR pl=separated_nonempty_list(COMMA, expr) RPAR		
+						{ loce $startpos $endpos @@ Ast.EApp (e, pl) }
+| LPAR xs=separated_nonempty_list(COMMA, expr) RPAR	
+						{ loce $startpos $endpos @@ Ast.ETuple (xs) }
+| e=expr LSPAR i=expr RSPAR
+						{ loce $startpos $endpos @@ Ast.ETupleAccess (e, i) }
+
 | a=expr PLUS b=expr	{ loce $startpos $endpos @@ Ast.EAdd (a, b) }
 | a=expr MINUS b=expr	{ loce $startpos $endpos @@ Ast.ESub (a, b) }
 | MINUS e=expr          { loce $startpos $endpos @@ Ast.ENeg e }
@@ -87,17 +93,18 @@ params:
 | p=separated_nonempty_list(COMMA, param)   { p }
 
 block:
-| NEWLINE INDENT e=expr DEDENT   { e }
-| e=expr                         { e }
+| NEWLINE INDENT e=expr DEDENT  { e }
+| e=expr                        { e }
 
 typexpr_atom:
-| t=IDEN               { Ast.TBase (t) }
-| APEX t=IDEN          { Ast.TAnon (t) }
-| LPAR t=typeexpr RPAR { t }
+| t=typeexpr APP t2=typeexpr 	{ Ast.TLambda (t, t2) }
+| t=IDEN               			{ Ast.TBase (t) }
+| APEX t=IDEN          			{ Ast.TAnon (t) }
+| LPAR t=typeexpr RPAR 			{ t }
 
 typeexpr:
 | xs=separated_nonempty_list(MUL, typexpr_atom)
-    { match xs with [t] -> t | _ -> Ast.TTuple xs }
+    							{ match xs with [t] -> t | _ -> Ast.TTuple xs }
 
 
 defs:
