@@ -123,6 +123,17 @@ Some(5) # int option
 ```
 
 
+### If
+
+```
+if cond:
+    val1
+else:
+    val2
+```
+
+```val1 if cond else val2```
+
 ### Lambdas
 
 ```

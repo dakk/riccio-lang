@@ -47,6 +47,11 @@ expr:
 | a=expr AND b=expr		{ loce $startpos $endpos @@ Ast.EAnd (a, b) }
 | a=expr OR b=expr		{ loce $startpos $endpos @@ Ast.EOr (a, b) }
 
+| e1=expr IF c=expr ELSE e2=expr
+						{ loce $startpos $endpos @@ Ast.EIf (c, e1, e2) }
+| IF c=expr COLON NEWLINE e1=expr NEWLINE ELSE COLON NEWLINE e2=expr
+						{ loce $startpos $endpos @@ Ast.EIf (c, e1, e2) }
+
 
 | i=IDEN EQ e=expr NEWLINE e2=expr 	
 						{ loce $startpos $endpos @@ Ast.ELet (i, None, e, e2) }

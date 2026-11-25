@@ -26,6 +26,7 @@ type expr =
 | EDiv of expr * expr
 | EMod of expr * expr
 
+| EIf of expr * expr * expr
 | ELet of string * texpr option * expr * expr
 | EFun of bool * (string * texpr option) list * texpr option * expr
 [@@deriving show {with_path = false}]
