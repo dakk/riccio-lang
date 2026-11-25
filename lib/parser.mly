@@ -5,7 +5,7 @@
 %token EOF, NEWLINE, INDENT, DEDENT
 
 %token LBRACE, RBRACE, LPAR, RPAR, COMMA, COLON, SEMICOLON, PIPE, EQ, DOT, LSPAR, RSPAR, EOL
-%token IF, THEN, ELSE, MATCH, CASE, CONS, PLUSPLUS
+%token IF, ELSE, MATCH, CASE, CONS, PLUSPLUS
 %token <string> IDEN
 
 %token PIPEGT, IO, LAMBDA, APP, APEX, TYPE
@@ -40,6 +40,12 @@ expr:
 | a=expr MUL b=expr		{ loce $startpos $endpos @@ Ast.EMul (a, b) }
 | a=expr DIV b=expr		{ loce $startpos $endpos @@ Ast.EDiv (a, b) }
 | a=expr MOD b=expr		{ loce $startpos $endpos @@ Ast.EMod (a, b) }
+
+| a=expr EQEQ b=expr	{ loce $startpos $endpos @@ Ast.EEq (a, b) }
+| a=expr GT b=expr		{ loce $startpos $endpos @@ Ast.EGt (a, b) }
+| a=expr GTE b=expr		{ loce $startpos $endpos @@ Ast.EGte (a, b) }
+| a=expr LT b=expr		{ loce $startpos $endpos @@ Ast.ELt (a, b) }
+| a=expr LTE b=expr		{ loce $startpos $endpos @@ Ast.ELte (a, b) }
 
 | TRUE          		{ loce $startpos $endpos @@ Ast.EBool (true) }
 | FALSE         		{ loce $startpos $endpos @@ Ast.EBool (false) }

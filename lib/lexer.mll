@@ -70,7 +70,6 @@ rule token = parse
   | "not"    { NOT }
   | "or"     { OR }
   | "rec"    { REC }
-  | "then"   { THEN }
   | "True"   { TRUE }
   | "type"   { TYPE }
 

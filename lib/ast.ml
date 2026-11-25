@@ -26,6 +26,13 @@ type expr =
 | EDiv of expr * expr
 | EMod of expr * expr
 
+| EEq of expr * expr
+| ELt of expr * expr
+| ELte of expr * expr
+| EGt of expr * expr
+| EGte of expr * expr
+
+
 | EIf of expr * expr * expr
 | ELet of string * texpr option * expr * expr
 | EFun of bool * (string * texpr option) list * texpr option * expr
