@@ -157,18 +157,18 @@ and layout = parse
   | ' '* '\n'               { Lexing.new_line lexbuf; layout lexbuf }
 
   | ' '* '#' [^ '\n']* '\n' { Lexing.new_line lexbuf; layout lexbuf }
-  | ' '* '#' [^ '\n']*     { () }        (* comment-only last line, no newline *)
+  | ' '* '#' [^ '\n']*      { false } 
 
-  | ' '* eof                { () }
+  | ' '* eof                { false }
 
   | ' '* '\t'               { err "tab character in indentation (use spaces)" }
 
-  | ' '+                    { adjust (String.length (Lexing.lexeme lexbuf)) }
+  | ' '+                    { adjust (String.length (Lexing.lexeme lexbuf)); true }
 
   | _                       { lexbuf.lex_curr_pos <- lexbuf.lex_start_pos;
-                             adjust 0 }
+                             adjust 0; true }
 
-  | eof                     { () }
+  | eof                     { false }
 
 {
 
@@ -176,7 +176,7 @@ let rec next_token lexbuf =
   match !pending with
   | INDENT :: _ when !nl_pending ->
       nl_pending := false;
-      NEWLINE
+      NEWLINE                        (* INDENT stays queued, comes next *)
   | t :: ts ->
       nl_pending := false;
       pending := ts;
@@ -184,7 +184,14 @@ let rec next_token lexbuf =
   | [] ->
       if !bol then begin
         bol := false;
-        layout lexbuf;
+        let real_line = layout lexbuf in
+        if real_line && !nl_pending && (match !pending with INDENT :: _ -> false | _ -> true) then begin
+          nl_pending := false;
+          if List.hd !indent_stack > 0 then begin
+            if !pending = [] then pending := [NEWLINE]
+            else pending := !pending @ [NEWLINE]
+          end
+        end;
         next_token lexbuf
       end
       else begin
