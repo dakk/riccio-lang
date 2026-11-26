@@ -89,6 +89,8 @@ expr:
 | a=expr PIPE b=expr    { loce $startpos $endpos @@ Ast.ERecordUpdate (a, b) }
 | LBRACE xs=separated_nonempty_list(COMMA, i=IDEN COLON e=expr {i, e}) RBRACE 
 						{ loce $startpos $endpos @@ Ast.ERecord (xs) }
+| e=expr DOT i=IDEN		{ loce $startpos $endpos @@ Ast.ERecordAccess (e, i) }
+
 
 param:
 | i=IDEN                    { (i, None) }

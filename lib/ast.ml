@@ -20,6 +20,7 @@ type expr =
 | ETuple of expr list
 | ETupleAccess of expr * expr
 | ERecordUpdate of expr * expr
+| ERecordAccess of expr * string
 | ERecord of (string * expr) list
 
 | ENot of expr
