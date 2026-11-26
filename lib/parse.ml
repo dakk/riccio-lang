@@ -8,6 +8,14 @@ exception SyntaxErrorLoced of (int * int) option * string
 
 let pos lexbuf = let pos = Lexing.lexeme_start_p lexbuf in (pos.pos_lnum, pos.pos_cnum - pos.pos_bol + 1)
 
+let reset_lexer () = 
+  Lexer.indent_stack := [0]; 
+  Lexer.paren_depth := 0;
+  Lexer.pending := []; 
+  Lexer.bol := true; 
+  Lexer.nl_pending := false;
+  ()
+
 let get_parse_error env =
     match I.stack env with
     | lazy Nil -> "Invalid syntax"
@@ -38,6 +46,7 @@ let rec parse_inc lexbuf (checkpoint : Ast.t I.checkpoint) =
 
 
 let parse filename s = 
+  reset_lexer ();
   let lexbuf = Lexing.from_string s in 
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
   Pt_loc.filename := filename;
