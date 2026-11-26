@@ -1,0 +1,3 @@
+# rule: tuple type
+
+type t = int * float

@@ -1,0 +1,8 @@
+(executable
+ (name test)
+ (libraries alcotest riccio)
+ (modules ("test")))
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))

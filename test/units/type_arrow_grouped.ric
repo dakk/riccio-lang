@@ -1,0 +1,3 @@
+# rule: parenthesized function type
+
+type b = (int -> int) -> int

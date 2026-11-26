@@ -1,0 +1,4 @@
+(rule
+ (alias runtest)
+ (deps (source_tree tests/units))
+ (action (run test/test.exe)))

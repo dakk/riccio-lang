@@ -1,0 +1,4 @@
+# rule: float literals (incl. negative)
+
+f1 = 12.3
+f2 = -148.44

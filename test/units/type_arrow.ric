@@ -1,0 +1,3 @@
+# rule: function type
+
+type f = int -> int

@@ -1,0 +1,8 @@
+# TODO: not implemented (guards + wildcard _)
+
+t = (1, 2)
+x = match t:
+    case (c, 12) if c < 12:
+        1
+    case (c, _):
+        2

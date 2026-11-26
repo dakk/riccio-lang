@@ -1,0 +1,7 @@
+# TODO: not implemented (MATCH/CASE tokens unused)
+
+x = match opt:
+    case Some(a):
+        a
+    case None:
+        0

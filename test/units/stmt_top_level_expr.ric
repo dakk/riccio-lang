@@ -1,0 +1,4 @@
+# TODO: top-level bare expressions not allowed (defs only)
+
+sum(5)
+f(sum(5))

@@ -1,0 +1,3 @@
+# rule: generic type instantiation in annotation
+
+b: tupled[str, int] = ("ciao", 12)

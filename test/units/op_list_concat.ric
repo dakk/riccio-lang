@@ -1,0 +1,4 @@
+# TODO: not implemented (PLUSPLUS token unused)
+
+a = [1, 2]
+c = a ++ [3, 4]

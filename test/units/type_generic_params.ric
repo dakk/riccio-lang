@@ -1,0 +1,3 @@
+# rule: type with generic params
+
+type tupled['a, 'b] = 'a * 'b

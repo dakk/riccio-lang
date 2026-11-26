@@ -1,0 +1,5 @@
+# rule: let binding inside a body
+
+def f(a):
+    x = 1
+    x + a

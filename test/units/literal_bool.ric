@@ -1,0 +1,4 @@
+# rule: bool literals
+
+b1 = True
+b2 = False

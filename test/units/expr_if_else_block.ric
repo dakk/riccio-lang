@@ -1,0 +1,7 @@
+# TODO: block if with indented branches does not parse
+
+def f(x):
+    if x == 0:
+        1
+    else:
+        0

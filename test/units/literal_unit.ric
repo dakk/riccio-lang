@@ -1,0 +1,3 @@
+# rule: unit literal
+
+u: unit = ()

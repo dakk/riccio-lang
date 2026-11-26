@@ -1,0 +1,3 @@
+# rule: single-line def body
+
+def f(x): x

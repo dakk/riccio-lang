@@ -1,0 +1,3 @@
+# rule: type alias
+
+type t = int

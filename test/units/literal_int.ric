@@ -1,0 +1,4 @@
+# rule: int literals (incl. negative)
+
+i1 = 12
+i2 = -148

@@ -1,0 +1,4 @@
+# TODO: empty params not allowed (separated_nonempty_list)
+
+def ask():
+    read_line()

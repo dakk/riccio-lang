@@ -1,0 +1,4 @@
+# TODO: not implemented (IO token unused)
+
+def ask(x) -> IO str:
+    read_line()

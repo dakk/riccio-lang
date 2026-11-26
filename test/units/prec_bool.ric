@@ -1,0 +1,4 @@
+# TODO: and/or/not precedence wrong
+
+b = not a and b
+c = a and b or c

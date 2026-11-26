@@ -1,0 +1,3 @@
+# rule: string join with +
+
+s = "ciao" + "riccio"

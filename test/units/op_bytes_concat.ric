@@ -1,0 +1,3 @@
+# rule: bytes join with +
+
+b = b"ciao" + b"riccio"

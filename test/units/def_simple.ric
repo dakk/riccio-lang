@@ -1,0 +1,4 @@
+# rule: def with untyped params
+
+def sum(x, y):
+    x + y

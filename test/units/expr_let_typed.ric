@@ -1,0 +1,5 @@
+# rule: typed let binding inside a body
+
+def f(a):
+    x: int = a
+    x

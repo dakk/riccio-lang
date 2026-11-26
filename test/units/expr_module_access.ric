@@ -1,0 +1,4 @@
+# TODO: not implemented (DOT token unused)
+
+import std
+x = std.print("hi")

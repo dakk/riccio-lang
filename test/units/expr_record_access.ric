@@ -1,0 +1,4 @@
+# TODO: not implemented (DOT token unused)
+
+pp = { name: "Davide", age: 34 }
+x = pp.name

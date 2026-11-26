@@ -19,6 +19,8 @@ type expr =
 | EApp of expr * expr list
 | ETuple of expr list
 | ETupleAccess of expr * expr
+| ERecordUpdate of expr * expr
+| ERecord of (string * expr) list
 
 | ENot of expr
 | ENeg of expr

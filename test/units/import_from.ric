@@ -1,0 +1,3 @@
+# rule: from module import names
+
+from std import print, read_line

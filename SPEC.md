@@ -111,7 +111,7 @@ Concat two lists: `c = a ++ [3, 4]`
 pp: { name: str, age: int } = { name: "Davide", age: 34 }
 
 def birthday(person: pp):
-    a with { age: pp.age + 1 }
+    a | { age: pp.age + 1 }
 ```
 
 
@@ -141,7 +141,9 @@ else:
     val2
 ```
 
-```val1 if cond else val2```
+```py
+x = val1 if cond else val2
+```
 
 ### Lambdas
 
@@ -178,8 +180,8 @@ read_line() |> trim |> parse_int |> fact |> print
 
 There are no exception, but we define a failable result:
 
-```
-type result('a, 'e) = Ok('a) | Error('e)
+```py
+type result['a, 'e] = Ok('a) | Error('e)
 ```
 
 

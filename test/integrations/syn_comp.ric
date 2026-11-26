@@ -59,7 +59,7 @@ pp: person = { name: "Davide", age: 34 }
 name_of_pp: str = pp.name
 
 def birthday(p: person) -> person:
-    p with { age: p.age + 1 }
+    p | { age: p.age + 1 }
 
 # ---------- data constructors, generics, unions ----------
 type option['a] = Some('a) | None

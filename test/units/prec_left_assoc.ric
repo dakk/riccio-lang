@@ -1,0 +1,3 @@
+# TODO: subtraction currently right-assoc: 10-3-2 -> 10-(3-2)
+
+x = 10 - 3 - 2

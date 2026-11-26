@@ -24,12 +24,12 @@
 %token UNDERSCORE, FROM, IMPORT, DEF, REC
 
 
-// %left OR
-// %left AND
-// %nonassoc NOT
-// %nonassoc EQEQ NEQ LT LTE GT GTE
-// %left PLUS MINUS
-// %left MUL DIV MOD
+%left OR
+%left AND
+%nonassoc NOT
+%nonassoc EQEQ NEQ LT LTE GT GTE
+%left PLUS MINUS
+%left MUL DIV MOD
 
 %start <Ast.t> program
 %%
@@ -83,9 +83,12 @@ expr:
 						{ loce $startpos $endpos @@ Ast.ELet (i, false, Some(t), e, e2) }
 
 | DEF i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON e=block NEWLINE e2=expr
-						{loce $startpos $endpos @@ Ast.ELet (i, false, None, Ast.EFun(p, r, e), e2)}
+						{ loce $startpos $endpos @@ Ast.ELet (i, false, None, Ast.EFun(p, r, e), e2)}
 | DEF REC i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON e=block NEWLINE e2=expr
-						{loce $startpos $endpos @@ Ast.ELet (i, true, None, Ast.EFun(p, r, e), e2)}
+						{ loce $startpos $endpos @@ Ast.ELet (i, true, None, Ast.EFun(p, r, e), e2)}
+| a=expr PIPE b=expr    { loce $startpos $endpos @@ Ast.ERecordUpdate (a, b) }
+| LBRACE xs=separated_nonempty_list(COMMA, i=IDEN COLON e=expr {i, e}) RBRACE 
+						{ loce $startpos $endpos @@ Ast.ERecord (xs) }
 
 param:
 | i=IDEN                    { (i, None) }

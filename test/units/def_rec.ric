@@ -1,0 +1,4 @@
+# rule: def rec (recursive binding)
+
+def rec down(x):
+    down(x - 1)

@@ -1,0 +1,3 @@
+# rule: ternary if-else expression
+
+x = 1 if c else 2

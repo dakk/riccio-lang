@@ -1,0 +1,4 @@
+# TODO: record update `p | { ... }` not implemented in parser yet
+
+def birthday(p):
+    p | { age: p.age + 1 }

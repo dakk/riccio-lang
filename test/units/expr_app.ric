@@ -1,0 +1,3 @@
+# rule: function application
+
+x = f(1, 2)

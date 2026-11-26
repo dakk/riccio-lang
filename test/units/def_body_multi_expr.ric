@@ -1,0 +1,5 @@
+# TODO: bare intermediate expressions not allowed in block
+
+def ask(x):
+    print("name?")
+    x

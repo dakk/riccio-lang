@@ -1,0 +1,4 @@
+# rule: def with typed params and return annotation
+
+def f(x: int, y) -> int:
+    x + y
