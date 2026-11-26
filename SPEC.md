@@ -174,10 +174,8 @@ inc = lambda (x) -> x + 1
 
 ```py
 match val:
-    case Some(a):
-        a
-    case None:
-        0
+    case Some(a): a
+    case None:    0
         
 match atuple:
     case (c, 12) if c < 12:
@@ -186,6 +184,11 @@ match atuple:
         0
     case (c, _):
         2
+
+match astring:
+    case "A" | "B": "alpha"
+    case "Z":       "zeta"
+    case _:         "?"
 ```
         
 ## Pipeline operator
@@ -276,3 +279,58 @@ cascading hell. This is translated as:
 ```ocaml
 match r with Ok(v) -> cc = v; next_expr | Err -> r
 ```
+
+### Bultin functions
+
+Builtin functions are inherited from python:
+
+```py
+range(b)
+# int -> list[int]
+
+map(f, b)
+# ('a -> 'b) -> 'a list -> 'b list
+
+filter(f, b)
+# ('a -> bool) -> 'a list -> 'a list
+
+sum(a)
+# 'a list -> 'a
+
+zip(a, b)
+# 'a list -> 'b list -> (a' * b') list
+
+unzip(a)
+# ('a * 'b) list -> ('a list * 'b list)
+
+all(a)
+# bool list -> bool
+
+any(a)
+# bool list -> bool 
+
+min(a, b)
+# int -> int -> int 
+
+max(a, b)
+# int -> int -> int 
+
+len(a)
+# a' list -> int
+
+int(a)
+# 'a -> int 
+
+float(a)
+# 'a -> float 
+
+bool(a)
+# 'a -> bool
+
+bytes(a)
+# 'a -> bytes
+
+str(a)
+# 'a -> str
+```
+
