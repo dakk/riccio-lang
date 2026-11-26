@@ -296,7 +296,7 @@ cascading hell. This is translated as:
 match r with Ok(v) -> cc = v; next_expr | Err -> r
 ```
 
-### Bultin functions
+### Builtin functions
 
 Builtin functions are inherited from python:
 

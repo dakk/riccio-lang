@@ -1,0 +1,75 @@
+# Copyright (C) 2026 Davide Gessa
+# This file is part of riccio-lang
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+def rec range (n: int) -> list[int]:
+    match n:
+        case 0: []
+        case n: 
+
+
+def rec map (f: 'a -> 'b, l: list['a]) -> list['b]:
+    match l:
+        case []: []
+        case x::xl: f(x) :: map (f, xl)
+
+def rec filter (f: 'a -> bool, l: list['a]) -> list['a]:
+    match l:
+        case []: []
+        case x::xl: 
+            if f(x):
+                x :: filter (f, xl)
+            else:
+                filter(f, xl)
+
+def rec len (l: list['a]) -> int:
+    match l:
+        case []: []
+        case x::xl: 1 + len(len(xl))
+
+def rec sum (l: list[int]) -> int:
+    match l:
+        case []: []
+        case x::xl: x + len(sum(xl))
+
+
+def rec any (l: list[bool]) -> bool:
+    match l:
+        case []: False
+        case True::xl: True 
+        case False::xl: any(xl)
+
+
+def rec all (l: list[bool]) -> bool:
+    match l:
+        case []: True
+        case True::xl: all(xl) 
+        case False::xl: False
+
+def min(a: 'a, b: 'a) -> 'a:
+    a if a < b else b
+
+def max(a: 'a, b: 'a) -> 'a:
+    b if a < b else a
+
+def zip(a: list['a], b: list['b]) -> list['a * 'b]:
+    match a, b:
+        case ([], _) | (_, []): []
+        case (ax::axl, bx::bxl): (ax, bx)::zip(axl, bxl)
+
+# def unzip(l: list['a * 'b]) -> (list['a] * list['b]):
+#     match l:
+#         case (a,b)::xl -> 
+
