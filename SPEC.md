@@ -224,9 +224,6 @@ def ask(): IO str  # inferred automatically
 
 
 
-
-
-
 ## Files are modules
 
 Files are modules, and import convention is inherited by python:
@@ -285,6 +282,12 @@ match r with Ok(v) -> cc = v; next_expr | Err -> r
 Builtin functions are inherited from python:
 
 ```py
+input()
+# unit -> IO[string]
+
+print(s)
+# string -> IO[unit]
+
 range(b)
 # int -> list[int]
 
