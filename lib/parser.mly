@@ -44,6 +44,7 @@ expr:
 | x=BYTES       		{ loce $startpos $endpos @@ Ast.EBytes (x) }
 | x=FLOAT         		{ loce $startpos $endpos @@ Ast.EFloat (x) }
 | x=INT         		{ loce $startpos $endpos @@ Ast.EInt (x) }
+| e=expr PIPEGT b=expr  { loce $startpos $endpos @@ Ast.EApp (b, [e]) }
 | e=expr LPAR pl=separated_list(COMMA, expr) RPAR		
 						{ loce $startpos $endpos @@ Ast.EApp (e, match pl with [] -> [Ast.EUnit] | _ -> pl) }
 | LPAR xs=separated_nonempty_list(COMMA, expr) RPAR	
