@@ -1,0 +1,4 @@
+# rule: zero-arg def with unit body (spec: Functions, def v(): ())
+
+def v():
+    ()

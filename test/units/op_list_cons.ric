@@ -1,4 +1,4 @@
-# TODO: not implemented (CONS token unused)
+# rule: list cons x :: xs (EListCons)
 
 a = [1, 2]
 b = 3 :: a

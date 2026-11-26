@@ -102,7 +102,7 @@ a: list[int] = [1, 2, 3]
 
 Add value: `b = 3 :: a`
 
-Concat two lists: `c = a ++ [3, 4]`
+Concat two lists: `c = a + [3, 4]`
 
 
 ### Record 
@@ -124,6 +124,13 @@ def v():
     ()
 
 # v: unit -> unit
+```
+
+```py
+def v (c: int) -> int * int:
+    (c * 2, c / 2)
+
+# v: int -> int
 ```
 
 ### Data constructors, generic types and unions

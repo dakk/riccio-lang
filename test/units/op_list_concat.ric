@@ -1,4 +1,4 @@
-# TODO: not implemented (PLUSPLUS token unused)
+# rule: list concat with + (same operator as str/bytes)
 
 a = [1, 2]
-c = a ++ [3, 4]
+c = a + [3, 4]

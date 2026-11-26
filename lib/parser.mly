@@ -92,6 +92,11 @@ expr:
 						{ loce $startpos $endpos @@ Ast.ERecord (xs) }
 | e=expr DOT i=IDEN		{ loce $startpos $endpos @@ Ast.ERecordAccess (e, i) }
 
+| LSPAR xs=separated_nonempty_list(COMMA, e=expr {e})  RSPAR
+						{ loce $startpos $endpos @@ Ast.EList (xs) }
+| e=expr CONS l=expr	{ loce $startpos $endpos @@ Ast.EListCons (e, l) }
+| LAMBDA LPAR p=params RPAR APP e=expr
+						{ loce $startpos $endpos @@ Ast.EFun (p, None, e) }
 
 param:
 | i=IDEN                    { (i, None) }

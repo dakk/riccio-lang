@@ -17,6 +17,8 @@ type expr =
 | EBytes of bytes
 | EVal of string
 | EApp of expr * expr list
+| EList of expr list
+| EListCons of expr * expr
 | ETuple of expr list
 | ETupleAccess of expr * expr
 | ERecordUpdate of expr * expr

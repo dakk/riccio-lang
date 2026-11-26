@@ -1,0 +1,6 @@
+# rule: nested def inside a body (expr-level DEF ... block NEWLINE e2)
+
+def outer(x):
+    def inner(v):
+        v
+    inner(x)

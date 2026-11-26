@@ -1,0 +1,7 @@
+# rule: multiline comment with """
+
+"""
+this is a
+multiline comment
+"""
+x = 1

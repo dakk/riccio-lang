@@ -1,0 +1,4 @@
+# rule: def with tuple return type and tuple body (parens required)
+
+def v (c: int) -> int * int:
+    (c * 2, c / 2)

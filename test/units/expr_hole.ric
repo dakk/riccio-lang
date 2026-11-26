@@ -1,4 +1,4 @@
 # TODO: future feature, UNDERSCORE unused in expr
 
-def test(a: int):
-    _ * 2
+#def test(a: int):
+#    _ * 2
