@@ -1,0 +1,7 @@
+# rule: int literal pattern
+
+x = match val:
+    case 1:
+        "one"
+    case _:
+        "other"

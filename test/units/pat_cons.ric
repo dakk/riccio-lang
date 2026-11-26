@@ -1,0 +1,7 @@
+# rule: cons pattern a :: xl and empty list []
+
+x = match alist:
+    case a :: xl:
+        a
+    case []:
+        "empty"

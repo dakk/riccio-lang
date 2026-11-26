@@ -1,0 +1,5 @@
+# rule: variable pattern x
+
+x = match val:
+    case x:
+        x

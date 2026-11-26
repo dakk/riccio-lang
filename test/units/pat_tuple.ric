@@ -1,0 +1,7 @@
+# rule: tuple pattern (c, 12)
+
+x = match atuple:
+    case (c, 12):
+        1
+    case _:
+        0

@@ -1,0 +1,48 @@
+(* Complete match/case/pattern rules for lib/parser.mly — verified in a scratch
+   build. Replaces the MATCH/case/pattern blocks. Block form only (the inline
+   comma-separated match is NOT part of the language), plus guards and
+   bare-name scrutinees. Requires `PList of pattern list` in ast.ml (already added).
+
+   Two gotchas this fixes:
+   1. `match v:` (bare name) collides with typed-let `v: t = ...` — the extra
+      `MATCH IDEN COLON ...` rule disambiguates; after `IDEN COLON` the next
+      token (CASE vs type-start) picks the right path.
+   2. Do NOT inline `option(IF ...)` in two case productions — menhir then
+      reports a reduce/reduce conflict between the two anonymous option
+      nonterminals. Use the named `guard` nonterminal below. *)
+
+(* in expr: *)
+| MATCH v=expr COLON NEWLINE INDENT cases=separated_nonempty_list(NEWLINE, case) DEDENT
+    { loce $startpos $endpos @@ Ast.EMatch (v, cases) }
+| MATCH v=IDEN COLON NEWLINE INDENT cases=separated_nonempty_list(NEWLINE, case) DEDENT
+    { loce $startpos $endpos @@ Ast.EMatch (Ast.EVal v, cases) }
+
+guard:
+|              { None }
+| IF g=expr  { Some g }
+
+case:
+| CASE p=pattern g=guard COLON NEWLINE INDENT e=expr DEDENT
+    { { Ast.pat = p; Ast.guard = g; Ast.body = e } }
+| CASE p=pattern g=guard COLON e=expr
+    { { Ast.pat = p; Ast.guard = g; Ast.body = e } }
+
+pattern:
+| ps=separated_nonempty_list(PIPE, pattern_cons)
+    { match ps with [p] -> p | _ -> Ast.POr ps }
+
+pattern_cons:
+| p=pattern_atom CONS l=pattern_cons   { Ast.PCons (p, l) }
+| p=pattern_atom                       { p }
+
+pattern_atom:
+| x=INT          { Ast.PInt x }
+| UNDERSCORE     { Ast.PAny }
+| i=IDEN         { Ast.PVar i }
+| s=STRING       { Ast.PStr s }
+| c=CAPID        { Ast.PApp (c, []) }
+| c=CAPID LPAR ps=separated_list(COMMA, pattern) RPAR  { Ast.PApp (c, ps) }
+| LPAR ts=separated_nonempty_list(COMMA, pattern) RPAR { Ast.PTuple ts }
+| LSPAR ts=separated_list(COMMA, pattern) RSPAR        { Ast.PList ts }
+| LBRACE cs=separated_nonempty_list(COMMA, x=IDEN COLON p=pattern {(x, p)}) RBRACE
+    { Ast.PRecord cs }

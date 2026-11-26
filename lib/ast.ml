@@ -8,7 +8,25 @@ type texpr =
 | TGeneric of string * texpr list
 [@@deriving show {with_path = false}]
 
-type expr =
+type pattern =
+| PAny                                   (* _ *)
+| PVar of string                         (* x *)
+| PStr of string                         (* "N" *)
+| PInt of int
+| PTuple of pattern list
+| PList of pattern list
+| PCons of pattern * pattern             (* h :: t *)
+| PApp of string * pattern list          (* Ok(Some(n)) *)
+| POr of pattern list                    (* "N" | "E" *)
+| PRecord of (string * pattern) list     (* { x: 0, y: _ } *)
+[@@deriving show {with_path = false}]
+
+type case = {
+    pat:   pattern;
+    guard: expr option;
+    body:  expr
+} 
+and expr =
 | EUnit
 | EInt of int
 | EFloat of float
@@ -23,6 +41,7 @@ type expr =
 | ERecordUpdate of expr * expr
 | EDot of expr * string
 | ERecord of (string * expr) list
+| EMatch of expr * case list 
 
 | ENot of expr
 | ENeg of expr

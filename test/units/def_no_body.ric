@@ -1,3 +1,0 @@
-# TODO: bodyless declaration not allowed (block required)
-
-def print(s: str): IO unit

@@ -1,0 +1,9 @@
+# rule: or-pattern p1 | p2 (spec example)
+
+x = match astring:
+    case "A" | "B":
+        "alpha"
+    case "Z":
+        "zeta"
+    case _:
+        "?"

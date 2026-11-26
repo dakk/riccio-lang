@@ -97,6 +97,40 @@ expr:
 | e=expr CONS l=expr	{ loce $startpos $endpos @@ Ast.ECons (e, l) }
 | LAMBDA LPAR p=params RPAR APP e=expr
 						{ loce $startpos $endpos @@ Ast.EFun (p, None, e) }
+| MATCH v=expr COLON NEWLINE INDENT cases=separated_nonempty_list(NEWLINE, case) DEDENT
+						{ loce $startpos $endpos @@ Ast.EMatch (v, cases) }
+| MATCH v=IDEN COLON NEWLINE INDENT cases=separated_nonempty_list(NEWLINE, case) DEDENT
+						{ loce $startpos $endpos @@ Ast.EMatch (Ast.EVal v, cases) }
+
+guard:
+|              { None }
+| IF g=expr  { Some g }
+
+case:
+| CASE p=pattern g=guard COLON NEWLINE INDENT e=expr DEDENT
+						{ { Ast.pat = p; Ast.guard = g; Ast.body = e } }
+| CASE p=pattern g=guard COLON e=expr
+						{ { Ast.pat = p; Ast.guard = g; Ast.body = e } }
+
+pattern:
+| ps=separated_nonempty_list(PIPE, pattern_cons)
+						{ match ps with [p] -> p | _ -> Ast.POr ps }
+
+pattern_cons:
+| p=pattern_atom CONS l=pattern_cons   { Ast.PCons (p, l) }
+| p=pattern_atom                       { p }
+
+pattern_atom:
+| x=INT          { Ast.PInt x }
+| UNDERSCORE     { Ast.PAny }
+| i=IDEN         { Ast.PVar i }
+| s=STRING       { Ast.PStr s }
+| c=CAPID        { Ast.PApp (c, []) }
+| c=CAPID LPAR ps=separated_list(COMMA, pattern) RPAR  { Ast.PApp (c, ps) }
+| LPAR ts=separated_nonempty_list(COMMA, pattern) RPAR { Ast.PTuple ts }
+| LSPAR ts=separated_list(COMMA, pattern) RSPAR        { Ast.PList ts }
+| LBRACE cs=separated_nonempty_list(COMMA, x=IDEN COLON p=pattern {(x, p)}) RBRACE
+						{ Ast.PRecord cs }
 
 param:
 | i=IDEN                    { (i, None) }

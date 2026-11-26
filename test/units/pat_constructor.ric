@@ -1,0 +1,7 @@
+# rule: constructor patterns Some(a) / None (PApp)
+
+x = match val:
+    case Some(a):
+        a
+    case None:
+        0

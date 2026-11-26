@@ -173,6 +173,15 @@ inc = lambda (x) -> x + 1
 ## Pattern matching
 
 ```py
+match val with
+    case 1: 'hola'
+    case 2: 'ciao'
+    case _: 'hello'
+```
+
+Match complex types (union, tuples, list)
+
+```py
 match val:
     case Some(a): a
     case None:    0
@@ -185,6 +194,16 @@ match atuple:
     case (c, _):
         2
 
+match alist:
+    case a::xl:
+        a
+    case []:
+        'empty'
+```
+
+Multiple match with |:
+
+```py
 match astring:
     case "A" | "B": "alpha"
     case "Z":       "zeta"

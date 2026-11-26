@@ -1,0 +1,7 @@
+# rule: record pattern { x: 0, y: _ }
+
+x = match p:
+    case { x: 0, y: _ }:
+        1
+    case _:
+        0

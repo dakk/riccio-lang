@@ -1,0 +1,9 @@
+# rule: case with guard `if c < 12` (spec example)
+
+x = match atuple:
+    case (c, 12) if c < 12:
+        1
+    case (12, 12):
+        0
+    case (c, _):
+        2

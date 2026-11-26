@@ -1,0 +1,7 @@
+# rule: list literal pattern [x, y]
+
+x = match alist:
+    case [x, y]:
+        x
+    case _:
+        0

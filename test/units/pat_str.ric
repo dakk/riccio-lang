@@ -1,0 +1,7 @@
+# rule: string literal pattern
+
+x = match s:
+    case "A":
+        1
+    case _:
+        0

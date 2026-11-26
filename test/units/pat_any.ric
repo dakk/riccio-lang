@@ -1,0 +1,5 @@
+# rule: wildcard pattern _
+
+x = match val:
+    case _:
+        0
