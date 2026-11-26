@@ -11,7 +11,7 @@
 %token <string> TVAR
 
 %token PIPEGT, IO, LAMBDA, APP, TYPE
-%token UNIT, COMMENT
+%token COMMENT
 %token <int> INT
 %token <float> FLOAT
 %token <string> STRING
@@ -37,15 +37,15 @@
 program: dl=list(defs) EOF { dl }
 
 expr:
-| UNIT          		{ loce $startpos $endpos @@ Ast.EUnit }
+| LPAR RPAR     		{ loce $startpos $endpos @@ Ast.EUnit }
 | i=IDEN        		{ loce $startpos $endpos @@ Ast.EVal (i) }
 
 | x=STRING      		{ loce $startpos $endpos @@ Ast.EStr (x) }
 | x=BYTES       		{ loce $startpos $endpos @@ Ast.EBytes (x) }
 | x=FLOAT         		{ loce $startpos $endpos @@ Ast.EFloat (x) }
 | x=INT         		{ loce $startpos $endpos @@ Ast.EInt (x) }
-| e=expr LPAR pl=separated_nonempty_list(COMMA, expr) RPAR		
-						{ loce $startpos $endpos @@ Ast.EApp (e, pl) }
+| e=expr LPAR pl=separated_list(COMMA, expr) RPAR		
+						{ loce $startpos $endpos @@ Ast.EApp (e, match pl with [] -> [Ast.EUnit] | _ -> pl) }
 | LPAR xs=separated_nonempty_list(COMMA, expr) RPAR	
 						{ loce $startpos $endpos @@ Ast.ETuple (xs) }
 | e=expr LSPAR i=expr RSPAR
@@ -96,7 +96,8 @@ param:
 | i=IDEN                    { (i, None) }
 | i=IDEN COLON t=typeexpr   { (i, Some(t)) }
 
-params: 
+params:
+|                                           { [("_", Some (Ast.TBase "unit"))] }
 | p=separated_nonempty_list(COMMA, param)   { p }
 
 block:

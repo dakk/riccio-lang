@@ -52,7 +52,6 @@ rule token = parse
 
   | blank+ { token lexbuf }
 
-  | "()"       { UNIT }
   | float as f { FLOAT (float_of_string f) }
   | int as i   { match int_of_string_opt i with
                    | Some n -> INT n

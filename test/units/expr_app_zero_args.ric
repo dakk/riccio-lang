@@ -1,0 +1,3 @@
+# rule: application with zero args f() is f(())
+
+x = f()

@@ -17,7 +17,6 @@ Discrepancies found by running every SPEC.md example through `parser.mly` -> `As
 - [ ] Pipeline `read_line() |> trim |> print` — PIPEGT unused
 - [ ] IO effect annotations (`def ask() -> IO str`, `def print(s: str): IO unit`) — IO token unused
 - [ ] Bodyless def declarations (`def print(s: str): IO unit`) — grammar requires a block
-- [ ] Zero-arg defs `def ask():` — `params` is `separated_nonempty_list`
 - [ ] Multi-expression bodies (`print("name?")` then `read_line()`) — `block` is a single expr; only let/def chains work
 - [ ] Nested `def` as the last expression of a body — expr-level def rule requires a trailing expr
 - [ ] Top-level expression statements (`sum(5)`, `std.print()`) — `program` is defs only

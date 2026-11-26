@@ -1,4 +1,4 @@
-# TODO: empty params not allowed (separated_nonempty_list)
+# rule: def with zero args = one unnamed unit param
 
 def ask():
     read_line()
