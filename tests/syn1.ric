@@ -16,3 +16,6 @@ def cfun(t):
 
 def cfun(t: unit) -> unit:
     t
+
+
+type b = (int * int -> int) -> int

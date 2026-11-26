@@ -3,8 +3,9 @@ type texpr =
 | TAnon of string
 | TTuple of texpr list
 | TRecord of (string * texpr) list
-| TList of texpr
 | TLambda of texpr * texpr
+| TUnion of (string * texpr option) list
+| TGeneric of string * texpr list
 [@@deriving show {with_path = false}]
 
 type expr =
@@ -40,15 +41,15 @@ type expr =
 
 
 | EIf of expr * expr * expr
-| ELet of string * texpr option * expr * expr
-| EFun of bool * (string * texpr option) list * texpr option * expr
+| ELet of string * bool * texpr option * expr * expr
+| EFun of (string * texpr option) list * texpr option * expr
 [@@deriving show {with_path = false}]
 
 type def = 
-| DType of string * texpr
+| DType of string * string list * texpr
 | DImport of string 
 | DImportFrom of string list * string
-| DDef of string * texpr option * expr
+| DDef of string * bool * texpr option * expr
 [@@deriving show {with_path = false}]
 
 

@@ -35,7 +35,9 @@
 
 let digit  = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
+let letter_up = ['A'-'Z']
 let iden   = letter (letter | digit | '_')*
+let capid  = letter_up (letter | digit | '_')*
 let int    = digit digit+ | digit
 let float  = digit digit* "." digit+
 let blank  = [' ' '\t' '\r']
@@ -76,7 +78,6 @@ rule token = parse
   | "_"   { UNDERSCORE }
   | "::"  { CONS }
   | "++"  { PLUSPLUS }
-  | "'"   { APEX }
   | "|>"  { PIPEGT }
   | "->"  { APP }
   | "|"   { PIPE }
@@ -110,6 +111,9 @@ rule token = parse
   | "b\""       { read_string (fun s -> BYTES (Bytes.of_string s)) (Buffer.create 32) lexbuf }
 
   | iden as i  { IDEN i }
+  | capid as i  { CAPID i }
+  | '\'' ['a'-'z'] ['A'-'Z' '0'-'9' '_']* as tv
+      { TVAR (String.sub tv 1 (String.length tv - 1)) }
 
   | eof
       { if !paren_depth > 0 then err "unterminated bracket at end of input";

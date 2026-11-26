@@ -22,7 +22,7 @@ TCO is guaranteed by the compiler; if it can't, a warning is shown.
 Keyword rec is used to bind the function itself in the body context.
 
 
-```python
+```py
 def rec fact(x):
     if x == 0:
         1 
@@ -35,7 +35,7 @@ Inferred type is int, since x - int = int (or maybe also float) (TODO)
 
 ## Currying by default
 
-```python
+```py
 def sum(x, y): # int -> int -> int
     x + y 
     
@@ -86,7 +86,7 @@ Join two bytes: `b"ciao" + b"riccio"`
 
 ### Tuple
 
-```
+```py
 type t = int * float 
 c = (12, 13.0)
 ```
@@ -96,9 +96,12 @@ Operations: `c[0], c[1]`
 
 ### List 
 
-`a: list(int) = [1, 2, 3]`
+```py 
+a: list[int] = [1, 2, 3]
+```
 
 Add value: `b = 3 :: a`
+
 Concat two lists: `c = a ++ [3, 4]`
 
 
@@ -117,15 +120,21 @@ def birthday(person: pp):
 Data constructors are supported, as long with generic types (prefixed by ')
 
 ```ocaml
-type option ('a) = Some('a) | None
+type option['a] = Some('a) | None
 
 Some(5) # int option
+```
+
+```ocaml
+type tupled['a, 'b] = 'a * 'b
+
+b: tupled[str, int] = ("ciao", 12)
 ```
 
 
 ### If
 
-```
+```py
 if cond:
     val1
 else:
@@ -136,14 +145,14 @@ else:
 
 ### Lambdas
 
-```
+```py
 inc = lambda (x) -> x + 1
 # inc: int -> int
 ```
 
 ## Pattern matching
 
-```
+```py
 match val:
     case Some(a):
         a
@@ -161,7 +170,7 @@ match atuple:
         
 ## Pipeline operator
 
-```
+```py
 read_line() |> trim |> parse_int |> fact |> print
 ```
 
@@ -179,7 +188,7 @@ type result('a, 'e) = Ok('a) | Error('e)
 Types are represented internally with (value_type, effects); we can define IO
 function with side effects.
 
-```
+```py
 def print(s: str): IO unit
 
 def greet(name):      # name is pure
@@ -193,11 +202,13 @@ def ask(): IO str  # inferred automatically
 
 
 
+
+
 ## Files are modules
 
 Files are modules, and import convention is inherited by python:
 
-```
+```py
 import std
 
 std.print()
@@ -205,7 +216,7 @@ std.print()
 
 or 
 
-```
+```py
 from std import print
 
 print()
@@ -218,7 +229,7 @@ print()
 
 ### Against function testing
 
-```
+```py
 def rec fact ...
 
 against fact:
@@ -231,7 +242,17 @@ against fact:
 
 Compiler will suggest what are the possible things from the env to be put instead of _
 
-```
+```py
 def test(a: int):
     _ * 2
+```
+
+### Question unroller (?)
+
+This sugar allow to unroll an expression that returns Ok | Err. If the result
+is ok, continue, otherwise returns the Err instead. It solves the Ok | Err 
+cascading hell. This is translated as:
+
+```ocaml
+match r with Ok(v) -> cc = v; next_expr | Err -> r
 ```

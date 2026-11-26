@@ -7,8 +7,10 @@
 %token LBRACE, RBRACE, LPAR, RPAR, COMMA, COLON, SEMICOLON, PIPE, EQ, DOT, LSPAR, RSPAR, EOL
 %token IF, ELSE, MATCH, CASE, CONS, PLUSPLUS
 %token <string> IDEN
+%token <string> CAPID
+%token <string> TVAR
 
-%token PIPEGT, IO, LAMBDA, APP, APEX, TYPE
+%token PIPEGT, IO, LAMBDA, APP, TYPE
 %token UNIT, COMMENT
 %token <int> INT
 %token <float> FLOAT
@@ -76,14 +78,14 @@ expr:
 
 
 | i=IDEN EQ e=expr NEWLINE e2=expr 	
-						{ loce $startpos $endpos @@ Ast.ELet (i, None, e, e2) }
+						{ loce $startpos $endpos @@ Ast.ELet (i, false, None, e, e2) }
 | i=IDEN COLON t=typeexpr EQ e=expr NEWLINE e2=expr	
-						{ loce $startpos $endpos @@ Ast.ELet (i, Some(t), e, e2) }
+						{ loce $startpos $endpos @@ Ast.ELet (i, false, Some(t), e, e2) }
 
 | DEF i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON e=block NEWLINE e2=expr
-						{loce $startpos $endpos @@ Ast.ELet (i, None, Ast.EFun(false, p, r, e), e2)}
+						{loce $startpos $endpos @@ Ast.ELet (i, false, None, Ast.EFun(p, r, e), e2)}
 | DEF REC i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON e=block NEWLINE e2=expr
-						{loce $startpos $endpos @@ Ast.ELet (i, None, Ast.EFun(true, p, r, e), e2)}
+						{loce $startpos $endpos @@ Ast.ELet (i, true, None, Ast.EFun(p, r, e), e2)}
 
 param:
 | i=IDEN                    { (i, None) }
@@ -96,26 +98,48 @@ block:
 | NEWLINE INDENT e=expr DEDENT  { e }
 | e=expr                        { e }
 
-typexpr_atom:
-| t=typeexpr APP t2=typeexpr 	{ Ast.TLambda (t, t2) }
-| t=IDEN               			{ Ast.TBase (t) }
-| APEX t=IDEN          			{ Ast.TAnon (t) }
-| LPAR t=typeexpr RPAR 			{ t }
 
+typedef_rhs:
+| t=typeexpr                     { t }
+| xs=separated_nonempty_list(PIPE, typeexpr_unionelement)
+                                 { Ast.TUnion xs }
 typeexpr:
-| xs=separated_nonempty_list(MUL, typexpr_atom)
-    							{ match xs with [t] -> t | _ -> Ast.TTuple xs }
+| lhs=typeproduct APP rhs=typeexpr
+    						{ Ast.TLambda (lhs, rhs) }
+| t=typeproduct				{ t }
 
+typeproduct:
+| xs=separated_nonempty_list(MUL, typexpr_atom)
+    						{ match xs with [t] -> t | _ -> Ast.TTuple xs }
+
+typexpr_atom:
+| t=IDEN					{ Ast.TBase t }
+| t=TVAR			    	{ Ast.TAnon t }
+| LPAR t=typeexpr RPAR  	{ t }
+| LBRACE xs=separated_nonempty_list(COMMA, typeexpr_recordelement) RBRACE
+    						{ Ast.TRecord xs }
+| i=IDEN LSPAR xs=separated_nonempty_list(COMMA, typeexpr) RSPAR
+							{ Ast.TGeneric (i, xs)}
+
+typeexpr_unionelement:
+| i=CAPID					{ (i, None) }
+| i=CAPID LPAR t=typeexpr RPAR	
+							{ (i, Some(t)) }
+
+typeexpr_recordelement:
+| i=IDEN COLON t=typeexpr   { (i, t) }
 
 defs:
-| TYPE i=IDEN EQ t=typeexpr      { locd $startpos $endpos @@ Ast.DType(i, t) }
-| i=IDEN EQ e=expr	 		     { locd $startpos $endpos @@ Ast.DDef(i, None, e) }
+| TYPE i=IDEN EQ t=typedef_rhs   { locd $startpos $endpos @@ Ast.DType(i, [], t) }
+| TYPE i=IDEN LSPAR xs=separated_nonempty_list(COMMA, t=TVAR {t}) RSPAR EQ t=typedef_rhs   
+								 { locd $startpos $endpos @@ Ast.DType(i, xs, t) }
+| i=IDEN EQ e=expr	 		     { locd $startpos $endpos @@ Ast.DDef(i, false, None, e) }
 | i=IDEN COLON t=typeexpr  EQ e=expr	 		     
-								 { locd $startpos $endpos @@ Ast.DDef(i, Some (t), e) }
+								 { locd $startpos $endpos @@ Ast.DDef(i, false, Some (t), e) }
 | DEF i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON body=block
-                                 { locd $startpos $endpos @@ Ast.DDef(i, None, Ast.EFun(false, p, r, body)) }
+                                 { locd $startpos $endpos @@ Ast.DDef(i, false, None, Ast.EFun(p, r, body)) }
 | DEF REC i=IDEN LPAR p=params RPAR r=option(APP t=typeexpr { t }) COLON body=block
-                                 { locd $startpos $endpos @@ Ast.DDef(i, None, Ast.EFun(true, p, r, body)) }
+                                 { locd $startpos $endpos @@ Ast.DDef(i, true, None, Ast.EFun(p, r, body)) }
 | IMPORT i=IDEN                  { locd $startpos $endpos @@ Ast.DImport(i) }
 | FROM m=IDEN IMPORT xs=separated_nonempty_list(COMMA, IDEN)
                                  { locd $startpos $endpos @@ Ast.DImportFrom(xs, m) }

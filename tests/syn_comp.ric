@@ -1,0 +1,153 @@
+# Comprehensive syntax test — everything defined in SPEC.md
+
+import std
+from std import print, read_line
+
+# ---------- base types ----------
+type myunit = unit
+type mybool = bool
+type myint = int
+type myfloat = float
+type mystr = str
+type mybytes = bytes
+
+u: unit = ()
+
+b1: bool = True
+b2: bool = False
+b3: bool = True and False or not False
+
+i1: int = 12
+i2: int = -148
+f1: float = 12.3
+f2: float = -148.44
+
+s1: str = "hello riccio"
+s2: str = "ciao" + "riccio"        # string join
+
+by1: bytes = b"hello riccio"
+by2: bytes = b"ciao" + b"riccio"   # bytes join
+
+# int / float operations: + - * / %
+n1: int = 1 + 2 - 3 * 4 / 5 % 6
+n2: float = 1.5 + 2.5 - 3.0 * 4.0 / 5.0 % 6.0
+
+# comparisons
+c1: bool = 1 < 2
+c2: bool = 1 <= 2
+c3: bool = 2 > 1
+c4: bool = 2 >= 1
+c5: bool = 1 == 1
+c6: bool = 1 != 2
+
+# ---------- tuple ----------
+type pair = int * float
+tup: pair = (12, 13.0)
+t0: int = tup[0]
+t1: float = tup[1]
+
+# ---------- list ----------
+type clist = list[int -> int]
+a: list[int] = [1, 2, 3]
+b: list[int] = 3 :: a              # cons
+c: list[int] = a ++ [3, 4]         # concat
+
+# ---------- record ----------
+type person = { name: str, age: int }
+pp: person = { name: "Davide", age: 34 }
+
+name_of_pp: str = pp.name
+
+def birthday(p: person) -> person:
+    p with { age: p.age + 1 }
+
+# ---------- data constructors, generics, unions ----------
+type option['a] = Some('a) | None
+type result['a, 'e] = Ok('a) | Error('e)
+
+opt_some: option[int] = Some(5)
+opt_none: option[int] = None
+res_ok: result[int, str] = Ok(5)
+res_err: result[int, str] = Error("boom")
+
+# ---------- functions, currying ----------
+def sum(x: int, y: int) -> int:
+    x + y
+
+partial_sum = sum(5)               # int -> int
+both = sum(5, 3)                   # int
+
+def apply(f: int -> int, v: int) -> int:
+    f(v)
+
+via_apply = apply(sum(5), 3)      # f receives a (int -> int)
+
+# ---------- recursion ----------
+def rec fact(x: int) -> int:
+    if x == 0:
+        1
+    else:
+        x * fact(x - 1)
+
+# ---------- if / else (block and ternary) ----------
+def c(x):
+    if fact(3) == 6:
+        1
+    else:
+        0
+
+r2: int = 1 if fact(3) == 6 else 0
+
+# ---------- lambda ----------
+inc = lambda (x) -> x + 1          # inc: int -> int
+
+# ---------- pattern matching ----------
+m1: int = match opt_some:
+    case Some(x):
+        x
+    case None:
+        0
+
+m2: int = match tup:
+    case (x, 12.0) if x < 12:
+        1
+    case (12, 12.0):
+        0
+    case (x, _):
+        2
+
+# ---------- pipeline ----------
+def trim(s: str) -> str:
+    s
+
+def parse_int(s: str) -> int:
+    0
+
+piped = read_line() |> trim |> parse_int |> fact |> print
+
+# ---------- impure functions / IO ----------
+def print2(s: str): IO unit
+
+def greet(name: str) -> str:
+    "hello " + name
+
+def ask() -> IO str:
+    print("name?")
+    read_line()
+
+# module access
+std.print("hi")
+
+# ---------- ignore() for intermediate unit ----------
+def use_ignore(x: int) -> int:
+    ignore(print("side effect"))
+    print("side effect") |> ignore
+    x
+
+# ---------- future features (SPEC.md "Future") ----------
+# against fact:
+#     property: fact(x) >= 1
+#     property: fact(x) * x == fact(x + 1)
+#
+# def with_hole(a: int) -> int:
+#     _ * 2

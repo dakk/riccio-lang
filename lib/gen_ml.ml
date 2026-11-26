@@ -25,9 +25,9 @@ let rec pp_expr fmt e =
 
   | EIf(c, e1, e2) -> 
     fprintf fmt "if (%a) then (%a) else (%a)" pp_expr c pp_expr e1 pp_expr e2
-  | ELet(i, t, e, e2) -> 
+  | ELet(i, r, t, e, e2) -> 
     fprintf fmt "let %s = (%a) in (%a)" i pp_expr e pp_expr e2
-  | EFun(r, p, ret, e) -> 
+  | EFun(p, ret, e) -> 
     let rec ps v = match v with | [] -> "" | (x,_)::xl -> x ^ " " ^ (ps xl) in
     fprintf fmt "fun %s-> (%a)" (ps p) pp_expr e
   | _ -> raise (CompilerError ("Expr not handled by gen_ml: " ^ Ast.show_expr e))
@@ -35,9 +35,9 @@ let rec pp_expr fmt e =
 let pp_ast fmt ast = 
   let rec pp_s fmt def =
     match def with 
-    | DType(i, t) -> fprintf fmt "type %s = %a;\n" i pp_type t
-    | DDef(i, None, e) -> fprintf fmt "let %s = %a;\n" i pp_expr e
-    | DDef(i, Some(t), e) -> fprintf fmt "let %s: %a = %a;\n" i pp_type t pp_expr e
+    | DType(i, gl, t) -> fprintf fmt "type %s = %a;\n" i pp_type t
+    | DDef(i, r, None, e) -> fprintf fmt "let %s = %a;\n" i pp_expr e
+    | DDef(i, r, Some(t), e) -> fprintf fmt "let %s: %a = %a;\n" i pp_type t pp_expr e
     (*
     | DImport(m) -> pp_str fmt ""
     | DImportFrom(sl, m) -> pp_str fmt "" *)
