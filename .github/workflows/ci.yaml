@@ -12,5 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: void
-        run: echo "Done."
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup OCaml / opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: ocaml-base-compiler.5.3.0
+          opam-repository: default
+
+      - name: Install dependencies (with-test)
+        run: opam install . --deps-only --with-test -y
+
+      - name: Build
+        run: opam exec -- dune build
+
+      - name: Run unit tests
+        run: opam exec -- dune runtest
