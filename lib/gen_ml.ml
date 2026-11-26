@@ -7,44 +7,51 @@ open Format
 let rec pp_type fmt t = 
   match t with
   | TBase(i) -> fprintf fmt "%s" i
-  | TAnon(_) -> raise (CompilerError "gen_ml: not implemented: TAnon (type variable)")
-  | TTuple(_) -> raise (CompilerError "gen_ml: not implemented: TTuple")
-  | TRecord(_) -> raise (CompilerError "gen_ml: not implemented: TRecord")
-  | TLambda(_) -> raise (CompilerError "gen_ml: not implemented: TLambda (function type)")
-  | TUnion(_) -> raise (CompilerError "gen_ml: not implemented: TUnion")
-  | TGeneric(_) -> raise (CompilerError "gen_ml: not implemented: TGeneric")
+  | TAnon(i) -> fprintf fmt "\'%s" i
+  | TTuple(ts) -> fprintf fmt "(%a)" (pp_list " * " pp_type) ts
+  | TRecord(xs) ->
+    fprintf fmt "{ %a }" (pp_list "; " (fun fmt (i, t) -> fprintf fmt "%s: %a" i pp_type t)) xs
+  | TLambda(l, r) ->
+    (match l with
+     | TLambda(_) -> fprintf fmt "(%a) -> %a" pp_type l pp_type r
+     | _ -> fprintf fmt "%a -> %a" pp_type l pp_type r)
+  | TUnion(ctors) ->
+    fprintf fmt "%a" (pp_list " | " (fun fmt (i, t) ->
+      match t with
+      | None -> fprintf fmt "%s" i
+      | Some(t) -> fprintf fmt "%s of %a" i pp_type t)) ctors
+  | TGeneric(i, [t]) -> fprintf fmt "%a %s" pp_type t i
+  | TGeneric(i, ts) -> fprintf fmt "(%a) %s" (pp_list ", " pp_type) ts i
 
 let rec pp_expr fmt e =
   match e with
-  | EUnit -> raise (CompilerError "gen_ml: not implemented: EUnit")
-  | EInt(_) -> raise (CompilerError "gen_ml: not implemented: EInt")
-  | EFloat(_) -> raise (CompilerError "gen_ml: not implemented: EFloat")
+  | EUnit -> fprintf fmt "()"
+  | EInt(n) -> fprintf fmt "%d" n
+  | EFloat(n) -> fprintf fmt "%f" n
   | EStr(_) -> raise (CompilerError "gen_ml: not implemented: EStr")
   | EBool(v) -> pp_str fmt (if v then "true" else "false")
   | EBytes(_) -> raise (CompilerError "gen_ml: not implemented: EBytes")
   | EVal(i) -> pp_str fmt i
   | EApp(_) -> raise (CompilerError "gen_ml: not implemented: EApp")
   | EList(_) -> raise (CompilerError "gen_ml: not implemented: EList")
-  | EListCons(_) -> raise (CompilerError "gen_ml: not implemented: EListCons (::)")
   | ETuple(_) -> raise (CompilerError "gen_ml: not implemented: ETuple")
-  | ETupleAccess(_) -> raise (CompilerError "gen_ml: not implemented: ETupleAccess")
+  | EAccess(_) -> raise (CompilerError "gen_ml: not implemented: EAccess")
   | ERecordUpdate(_) -> raise (CompilerError "gen_ml: not implemented: ERecordUpdate (|)")
-  | ERecordAccess(_) -> raise (CompilerError "gen_ml: not implemented: ERecordAccess")
+  | EDot(_) -> raise (CompilerError "gen_ml: not implemented: EDot")
   | ERecord(_) -> raise (CompilerError "gen_ml: not implemented: ERecord")
 
   | ENot(e) -> fprintf fmt "not %a" pp_expr e
-  | ENeg(_) -> raise (CompilerError "gen_ml: not implemented: ENeg")
+  | ENeg(e) -> fprintf fmt "-%a" pp_expr e
   | EAnd(a,b) -> fprintf fmt "%a && %a" pp_expr a pp_expr b
   | EOr(a,b) -> fprintf fmt "%a || %a" pp_expr a pp_expr b
-  | EJoin(_) -> raise (CompilerError "gen_ml: not implemented: EJoin")
-  | ECons(_) -> raise (CompilerError "gen_ml: not implemented: ECons")
-  | EAdd(_) -> raise (CompilerError "gen_ml: not implemented: EAdd (+)")
-  | ESub(_) -> raise (CompilerError "gen_ml: not implemented: ESub (-)")
-  | EMul(_) -> raise (CompilerError "gen_ml: not implemented: EMul (*)")
-  | EDiv(_) -> raise (CompilerError "gen_ml: not implemented: EDiv (/)")
-  | EMod(_) -> raise (CompilerError "gen_ml: not implemented: EMod (%)")
+  | ECons(a, b) -> fprintf fmt "%a :: %a" pp_expr a pp_expr b
+  | EAdd(a, b) -> fprintf fmt "%a + %a" pp_expr a pp_expr b
+  | ESub(a, b) -> fprintf fmt "%a - %a" pp_expr a pp_expr b
+  | EMul(a, b) -> fprintf fmt "%a * %a" pp_expr a pp_expr b
+  | EDiv(a, b) -> fprintf fmt "%a / %a" pp_expr a pp_expr b
+  | EMod(a, b) -> fprintf fmt "%a %% %a" pp_expr a pp_expr b
 
-  | ENeq(_) -> raise (CompilerError "gen_ml: not implemented: ENeq (!=)")
+  | ENeq(a, b) -> fprintf fmt "%a <> %a" pp_expr a pp_expr b
   | EEq(a, b) -> fprintf fmt "%a == %a" pp_expr a pp_expr b
   | ELt(a, b) -> fprintf fmt "%a < %a" pp_expr a pp_expr b
   | ELte(a, b) -> fprintf fmt "%a <= %a" pp_expr a pp_expr b
@@ -62,7 +69,13 @@ let rec pp_expr fmt e =
 let pp_ast fmt ast = 
   let rec pp_s fmt def =
     match def with 
-    | DType(i, gl, t) -> fprintf fmt "type %s = %a;\n" i pp_type t
+    | DType(i, gl, t) ->
+      let params = match gl with
+        | [] -> ""
+        | [v] -> "'" ^ v ^ " "
+        | vs -> "(" ^ String.concat ", " (List.map (fun v -> "'" ^ v) vs) ^ ") "
+      in
+      fprintf fmt "type %s%s = %a;\n" params i pp_type t
     | DImport(_) -> raise (CompilerError "gen_ml: not implemented: DImport")
     | DImportFrom(_) -> raise (CompilerError "gen_ml: not implemented: DImportFrom")
     | DDef(i, r, None, e) -> fprintf fmt "let %s = %a;\n" i pp_expr e

@@ -1,4 +1,4 @@
-# rule: list cons x :: xs (EListCons)
+# rule: list cons x :: xs (ECons)
 
 a = [1, 2]
 b = 3 :: a

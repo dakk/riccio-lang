@@ -18,18 +18,16 @@ type expr =
 | EVal of string
 | EApp of expr * expr list
 | EList of expr list
-| EListCons of expr * expr
 | ETuple of expr list
-| ETupleAccess of expr * expr
+| EAccess of expr * expr
 | ERecordUpdate of expr * expr
-| ERecordAccess of expr * string
+| EDot of expr * string
 | ERecord of (string * expr) list
 
 | ENot of expr
 | ENeg of expr
 | EAnd of expr * expr
 | EOr of expr * expr
-| EJoin of expr * expr
 | ECons of expr * expr
 | EAdd of expr * expr
 | ESub of expr * expr

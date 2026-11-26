@@ -50,7 +50,7 @@ expr:
 | LPAR xs=separated_nonempty_list(COMMA, expr) RPAR	
 						{ loce $startpos $endpos @@ Ast.ETuple (xs) }
 | e=expr LSPAR i=expr RSPAR
-						{ loce $startpos $endpos @@ Ast.ETupleAccess (e, i) }
+						{ loce $startpos $endpos @@ Ast.EAccess (e, i) }
 
 | a=expr PLUS b=expr	{ loce $startpos $endpos @@ Ast.EAdd (a, b) }
 | a=expr MINUS b=expr	{ loce $startpos $endpos @@ Ast.ESub (a, b) }
@@ -90,11 +90,11 @@ expr:
 | a=expr PIPE b=expr    { loce $startpos $endpos @@ Ast.ERecordUpdate (a, b) }
 | LBRACE xs=separated_nonempty_list(COMMA, i=IDEN COLON e=expr {i, e}) RBRACE 
 						{ loce $startpos $endpos @@ Ast.ERecord (xs) }
-| e=expr DOT i=IDEN		{ loce $startpos $endpos @@ Ast.ERecordAccess (e, i) }
+| e=expr DOT i=IDEN		{ loce $startpos $endpos @@ Ast.EDot (e, i) }
 
 | LSPAR xs=separated_nonempty_list(COMMA, e=expr {e})  RSPAR
 						{ loce $startpos $endpos @@ Ast.EList (xs) }
-| e=expr CONS l=expr	{ loce $startpos $endpos @@ Ast.EListCons (e, l) }
+| e=expr CONS l=expr	{ loce $startpos $endpos @@ Ast.ECons (e, l) }
 | LAMBDA LPAR p=params RPAR APP e=expr
 						{ loce $startpos $endpos @@ Ast.EFun (p, None, e) }
 
