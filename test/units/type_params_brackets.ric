@@ -1,0 +1,4 @@
+# rule: type params in square brackets
+# TODO: RHS still fails - union ctors with args unparseable (CAPID unreachable in lexer)
+
+type result['a, 'e] = Ok('a) | Error('e)

@@ -12,7 +12,6 @@ Discrepancies found by running every SPEC.md example through `parser.mly` -> `As
 - [ ] Field/module access `pp.name`, `std.print()` — DOT token unused
 - [ ] Record update `p with { age: ... }` — no rule (`with` lexes as plain IDEN)
 - [ ] Union constructors with args, e.g. `type option['a] = Some('a) | None` — lexer bug: `iden` rule shadows `capid`, so CAPID is unreachable and the unionelement rule can never match
-- [ ] Paren-style type params `type result('a, 'e) = ...` — only `[...]` accepted
 - [ ] Lambda `lambda (x) -> x + 1` — LAMBDA token unused
 - [ ] `match` / `case` with guards (`case (c, 12) if c < 12:`) and wildcard `_` — MATCH / CASE / UNDERSCORE unused
 - [ ] Pipeline `read_line() |> trim |> print` — PIPEGT unused
@@ -33,4 +32,3 @@ Discrepancies found by running every SPEC.md example through `parser.mly` -> `As
 
 ## Tests / infra
 
-- [ ] Wire a runner for `tests/units/*.ric` (CI is a no-op; `make run-test` points to a nonexistent `test/test.exe`)

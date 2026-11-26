@@ -1,3 +1,0 @@
-# TODO: paren-style type params not accepted
-
-type result('a, 'e) = Ok('a) | Error('e)

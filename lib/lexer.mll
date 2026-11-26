@@ -110,8 +110,8 @@ rule token = parse
   | '"'         { read_string (fun s -> STRING s) (Buffer.create 32) lexbuf }
   | "b\""       { read_string (fun s -> BYTES (Bytes.of_string s)) (Buffer.create 32) lexbuf }
 
-  | iden as i  { IDEN i }
   | capid as i  { CAPID i }
+  | iden as i  { IDEN i }
   | '\'' ['a'-'z'] ['A'-'Z' '0'-'9' '_']* as tv
       { TVAR (String.sub tv 1 (String.length tv - 1)) }
 

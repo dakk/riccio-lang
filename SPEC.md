@@ -115,6 +115,17 @@ def birthday(person: pp):
 ```
 
 
+### Functions
+
+Functions always have a parameters; if `()` is provided, the parameter is unit:
+
+```py
+def v():
+    ()
+
+# v: unit -> unit
+```
+
 ### Data constructors, generic types and unions
 
 Data constructors are supported, as long with generic types (prefixed by ')
