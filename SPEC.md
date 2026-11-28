@@ -301,6 +301,12 @@ match r with Ok(v) -> cc = v; next_expr | Err -> r
 Builtin functions are inherited from python:
 
 ```py
+fst(l)
+# 'a * 'b -> 'a 
+
+snd(l)
+# 'a * 'b -> 'b
+
 input()
 # unit -> IO[string]
 

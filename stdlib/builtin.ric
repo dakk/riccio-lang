@@ -25,6 +25,7 @@ def rec map (f: 'a -> 'b, l: list['a]) -> list['b]:
         case []: []
         case x::xl: f(x) :: map (f, xl)
 
+
 def rec filter (f: 'a -> bool, l: list['a]) -> list['a]:
     match l:
         case []: []
@@ -34,10 +35,12 @@ def rec filter (f: 'a -> bool, l: list['a]) -> list['a]:
             else:
                 filter(f, xl)
 
+
 def rec len (l: list['a]) -> int:
     match l:
         case []: []
         case x::xl: 1 + len(len(xl))
+
 
 def rec sum (l: list[int]) -> int:
     match l:
@@ -58,18 +61,33 @@ def rec all (l: list[bool]) -> bool:
         case True::xl: all(xl) 
         case False::xl: False
 
+
 def min(a: 'a, b: 'a) -> 'a:
     a if a < b else b
+
 
 def max(a: 'a, b: 'a) -> 'a:
     b if a < b else a
 
-def zip(a: list['a], b: list['b]) -> list['a * 'b]:
+
+def rec zip(a: list['a], b: list['b]) -> list['a * 'b]:
     match a, b:
         case ([], _) | (_, []): []
         case (ax::axl, bx::bxl): (ax, bx)::zip(axl, bxl)
 
-# def unzip(l: list['a * 'b]) -> (list['a] * list['b]):
-#     match l:
-#         case (a,b)::xl -> 
 
+def unzip(l: list['a * 'b]) -> (list['a] * list['b]):
+    def rec _unz(al, bl, ll):
+        match ll:
+            case []: al, bl
+            case (a,b)::xl: _unz(a::al, b::bl, xl)
+    _unz([], [], l)
+
+
+def fst(l: 'a * 'b) -> 'a:
+    match l:
+        case (a, b) -> a 
+
+def snd(l: 'a * 'b) -> 'b:
+    match l:
+        case (a, b) -> b

@@ -1,0 +1,25 @@
+# Copyright (C) 2026 Davide Gessa
+# This file is part of riccio-lang
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+type option['a] = Some('a) | None
+
+def is_some(v: option['a]) -> bool:
+    match v with 
+    | Some(_) -> True 
+    | None -> False 
+
+def is_none(v: option['a]) -> bool:
+    not is_some(v)
