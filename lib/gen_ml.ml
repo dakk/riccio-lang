@@ -55,6 +55,24 @@ let pp_ocaml_string fmt s =
     | c -> pp_print_char fmt c) s;
   pp_print_char fmt '"'
 
+let rec pp_pattern fmt p =
+  match p with
+  | PAny -> pp_str fmt "_"
+  | PVar(x) -> pp_str fmt x
+  | PStr(s) -> pp_ocaml_string fmt s
+  | PInt(i) -> fprintf fmt "%d" i
+  | PTuple(ps) -> fprintf fmt "(%a)" (pp_list ", " pp_pattern) ps
+  | PList(ps) -> fprintf fmt "[%a]" (pp_list "; " pp_pattern) ps
+  | PCons(h, t) -> fprintf fmt "%a :: %a" pp_pattern h pp_pattern t
+  | PApp(c, []) -> pp_str fmt c
+  | PApp(c, ps) -> fprintf fmt "%s (%a)" c (pp_list ", " pp_pattern) ps
+  | POr(ps) -> fprintf fmt "%a" (pp_list " | " pp_pattern) ps
+  | PRecord(fs) ->
+    fprintf fmt "{ %a }" (pp_list "; " (fun fmt (i, p) -> fprintf fmt "%s = %a" i pp_pattern p)) fs
+
+let pp_arg fmt e =
+  if is_atomic e then pp_expr fmt e else fprintf fmt "(%a)" pp_expr e
+
 let rec pp_expr fmt e =
   match e with
   | EUnit -> fprintf fmt "()"
@@ -105,9 +123,16 @@ let rec pp_expr fmt e =
   | EFun(p, ret, e) -> 
     let rec ps v = match v with | [] -> "" | (x,_)::xl -> x ^ " " ^ (ps xl) in
     fprintf fmt "fun %s-> (%a)" (ps p) pp_expr e
+  | EMatch(v, cases) ->
+    let pp_guard fmt = function
+      | None -> ()
+      | Some(g) -> fprintf fmt " when %a" pp_expr g
+    in
+    let pp_case fmt c =
+      fprintf fmt "| %a%a -> %a" pp_pattern c.pat pp_guard c.guard pp_arg c.body
+    in
+    fprintf fmt "match %a with %a" pp_arg v (pp_list " " pp_case) cases
 
-and pp_arg fmt e =
-  if is_atomic e then pp_expr fmt e else fprintf fmt "(%a)" pp_expr e
 
 let pp_ast fmt ast = 
   let rec pp_s fmt def =
